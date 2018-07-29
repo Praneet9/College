@@ -164,34 +164,24 @@ fseek(bmpInput, (54 + 4*nColors), SEEK_SET);
 	      /*-----read data, reflect and write to output file----*/
 	    	 fread(pChar, sizeof(char), 1, bmpInput);
 	    	//printf("%d,", *pChar);
-	      for (i = 255; i>=0; i--)
-	      {//printf("%d,", i);
-	      	if (*pChar == i)
-	      	{
-	      		//j = *pChar - int(a[i]);
-	      		//printf("%d,%d,", i,*pChar);
-	      		*pChar = int(a[i]);
-	      		//printf("%d,%d***\n", *pChar,int(a[i]));
-	      		i = -1;
-	      	}
-	      }
+	      *pChar = int(a[*pChar]);
 	      fwrite(pChar, sizeof(char), 1, bmpOutput);
 
 	    }
 	}
-	fseek(bmpOutput, (54 + 4*nColors), SEEK_SET);
-//printf("\nOutput\n");
-	for(r=0; r<=originalImage.rows - 1; r++)
-	{
-		//printf("%d\n", r);
-	    for(c=0; c<=originalImage.cols - 1; c++)
-	    {
-	      /*-----read data, reflect and write to output file----*/
-	    	 fread(pChar, sizeof(char), 1, bmpOutput);
-	    	//printf("%d,", *pChar);
+// 	fseek(bmpOutput, (54 + 4*nColors), SEEK_SET);
+// //printf("\nOutput\n");
+// 	for(r=0; r<=originalImage.rows - 1; r++)
+// 	{
+// 		//printf("%d\n", r);
+// 	    for(c=0; c<=originalImage.cols - 1; c++)
+// 	    {
+// 	      /*-----read data, reflect and write to output file----*/
+// 	    	 fread(pChar, sizeof(char), 1, bmpOutput);
+// 	    	//printf("%d,", *pChar);
 
-	    }
-	}
+// 	    }
+// 	}
 
 
 // printf("\n\n****** histogram values ******\n\n");
