@@ -15,28 +15,16 @@ int main(int argc, char* argv[])
   FILE			*bmpInput, *bmpOutput;
   sImage		originalImage;
   unsigned char		someChar;
-  unsigned char*	pChar,nChar;
+  unsigned char*	pChar;
   int			nColors;  /* BMP number of colors */
   long			fileSize; /* BMP file size */
   int			vectorSize; /* BMP vector size */
-  int			r, c, i, j;       /* r = rows, c = cols */
-  int 			nk[256];
-  int 			histogram[256];
-  float 			a[256];
-  int sum = 0;
-  float cdf = 0;
+  int			r, c;       /* r = rows, c = cols */
 
-  for(c=0; c<=256 - 1; c++)
-    {
-      a[c] = 0;
-      nk[c] = 0;
-      histogram[c] = 0;
-    }
 
   /* initialize pointer */
   someChar = '0';
   pChar = &someChar;
-  //nChar = &someChar;
 
   if(argc < 2)
   {
@@ -82,132 +70,10 @@ int main(int argc, char* argv[])
     {
       /*-----read data, reflect and write to output file----*/
       fread(pChar, sizeof(char), 1, bmpInput);
-      //printf("%d,", *pChar);
-		a[*pChar] = a[*pChar]+1;
-		nk[*pChar] = a[*pChar];
-		sum = sum + 1;
-      //fwrite(pChar, sizeof(char), 1, bmpOutput);
+       *pChar = 255 - *pChar;
+      fwrite(pChar, sizeof(char), 1, bmpOutput);
     }
   }
-  //printf("%d", sum);
-
-  //printf("%d\n", int(5.000));
-
-   //  printf("\n\n****** A values ****** \n\n");
-   // for(c=0; c<=256 - 1; c++)
-   //  {
-   //    printf("%f,", a[c]);
-   //  }
-
-  for(c=0; c<=256 - 1; c++)
-    {
-      a[c] = a[c] / sum;
-    }
-
-  for(c=0; c<=256 - 1; c++)
-    {
-    	cdf = cdf + a[c];
-    	a[c] = round(cdf * 255);
-      //printf("%d **** %f,\n", nk[c], a[c]);
-    }
-
-    sum = 0;
-
-   //    printf("\n\n****** A round values ****** \n\n");
-   // for(c=0; c<=256 - 1; c++)
-   //  {
-   //    printf("%f,", a[c]);
-   //  }
-
-    for (r = 0; r <= 256-1; r++)
-    {
-
-    	i = int(a[r]);
-    	histogram[i] = histogram[i] + nk[r];
-
-    }
-
-   // for (r = 0; r<= 256 - 1; r++)
-   // {
-   // 		for (c = 0; c<=256 - 1; c++)
-   // 		{
-   // 			if (r == int(a[c]))
-   // 			{
-   // 				sum = sum + nk[c];
-   // 			}
-   // 		}
-   // 		histogram[r] = sum;
-   // }
-
- 
-
-// printf("\n\n****** histogram values ****** \n\n");
-// for(c=0; c<=256 - 1; c++)
-//     {
-//       printf("%d,", histogram[c]);
-//    }
-
-
-// printf("\n\n****** original values ****** \n\n");
-//    for(c=0; c<=256 - 1; c++)
-//     {
-//       printf("%d,", nk[c]);
-//     }
-//printf("\n****\n");
-pChar = &someChar;
-fseek(bmpInput, (54 + 4*nColors), SEEK_SET);
-    for(r=0; r<=originalImage.rows - 1; r++)
-	{
-		//printf("%d\n", r);
-	    for(c=0; c<=originalImage.cols - 1; c++)
-	    {
-	      /*-----read data, reflect and write to output file----*/
-	    	 fread(pChar, sizeof(char), 1, bmpInput);
-	    	//printf("%d,", *pChar);
-	      *pChar = int(a[*pChar]);
-	      fwrite(pChar, sizeof(char), 1, bmpOutput);
-
-	    }
-	}
-// 	fseek(bmpOutput, (54 + 4*nColors), SEEK_SET);
-// //printf("\nOutput\n");
-// 	for(r=0; r<=originalImage.rows - 1; r++)
-// 	{
-// 		//printf("%d\n", r);
-// 	    for(c=0; c<=originalImage.cols - 1; c++)
-// 	    {
-// 	      /*-----read data, reflect and write to output file----*/
-// 	    	 fread(pChar, sizeof(char), 1, bmpOutput);
-// 	    	//printf("%d,", *pChar);
-
-// 	    }
-// 	}
-
-
-// printf("\n\n****** histogram values ******\n\n");
-// for(c=0; c<=256 - 1; c++)
-//     {
-//       printf("%d,", histogram[c]);
-//     }
-
-// printf("\n\n****** original values ******\n\n");
-//    for(c=0; c<=256 - 1; c++)
-//     {
-//       printf("%d,", nk[c]);
-//     }
-
-  //  for(r=0; r<=originalImage.rows - 1; r++)
-  // {
-  //   for(c=0; c<=originalImage.cols - 1; c++)
-  //   {
-  //     /*-----read data, reflect and write to output file----*/
-  //     fread(pChar, sizeof(char), 1, bmpInput);
-		// a[*pChar] = a[*pChar]+1;
-		// nk[*pChar] = a[*pChar];
-		// sum = sum + 1;
-  //     fwrite(pChar, sizeof(char), 1, bmpOutput);
-  //   }
-  // }
 
   fclose(bmpInput);
   fclose(bmpOutput);
@@ -235,7 +101,6 @@ long getImageInfo(FILE* inputFile, long offset, int numberOfChars)
     fread(ptrC, sizeof(char), 1, inputFile);
     /* calculate value based on adding bytes */
     value = (long)(value + (*ptrC)*(pow(256, (i-1))));
-	//printf(" ptr %d\n",*ptrC);
   }
   return(value);
 
@@ -282,9 +147,3 @@ void copyColorTable(FILE* inputFile, FILE* outputFile, int nColors)
   }
 
 }
-
-
-
-
-
-
